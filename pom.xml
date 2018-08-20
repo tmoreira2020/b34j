@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright © 2018 Thiago Moreira (tmoreira2020@gmail.com)
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>br.com.thiagomoreira</groupId>
+		<artifactId>parent</artifactId>
+		<version>2</version>
+	</parent>
+
+	<groupId>br.com.thiagomoreira.b3</groupId>
+	<artifactId>b34j</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+
+	<name>b34j</name>
+	<description>B3 for Java - A Java wrapper to the B3 API</description>
+	<url>https://github.com/tmoreira2020/b34j</url>
+	<inceptionYear>2018</inceptionYear>
+
+	<scm>
+		<connection>scm:git:git@github.com:tmoreira2020/b34j.git</connection>
+		<developerConnection>scm:git:git@github.com:tmoreira2020/b34j.git</developerConnection>
+		<tag>HEAD</tag>
+		<url>https://github.com/tmoreira2020/b34j</url>
+	</scm>
+	<issueManagement>
+		<system>Github</system>
+		<url>https://github.com/tmoreira2020/b34j/issues</url>
+	</issueManagement>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.zeroturnaround</groupId>
+			<artifactId>zt-zip</artifactId>
+			<version>1.13</version>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.12</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>biz.aQute.bnd</groupId>
+				<artifactId>bnd-maven-plugin</artifactId>
+				<version>3.3.0</version>
+				<configuration>
+					<bnd><![CDATA[-exportcontents: ${packages;NAMED;*br.com.thiagomoreira.b3*}]]></bnd>
+				</configuration>
+				<executions>
+					<execution>
+						<id>default-bnd-process</id>
+						<goals>
+							<goal>bnd-process</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>com.googlecode.maven-java-formatter-plugin</groupId>
+				<artifactId>maven-java-formatter-plugin</artifactId>
+				<version>0.4</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>format</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>3.1.0</version>
+				<configuration>
+					<archive>
+						<manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+					</archive>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>
