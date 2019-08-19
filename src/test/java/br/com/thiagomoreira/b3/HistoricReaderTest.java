@@ -55,7 +55,7 @@ public class HistoricReaderTest {
 
 		HistoricReader reader = new HistoricReader();
 
-		Candlestick candlestick = reader.convert(line);
+		Candlestick candlestick = reader.convert(line, 2);
 
 		assertEquals("UNIP6", candlestick.getCode());
 		assertEquals(46.80, candlestick.getPriceOpen(), 0);

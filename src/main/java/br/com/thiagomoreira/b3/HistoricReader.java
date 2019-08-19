@@ -38,14 +38,18 @@ public class HistoricReader {
 	protected static Logger log = LoggerFactory.getLogger(HistoricReader.class);
 	protected DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
 
-	protected Candlestick convert(String line) throws ParseException {
+	protected Candlestick convert(String line, int bdiCode)
+			throws ParseException {
 		if (line.startsWith("01")) {
 			Date date = dateFormat.parse(line.substring(2, 10));
 			String code = line.substring(12, 24).trim();
+			int temp = Integer.valueOf(line.substring(10, 12).trim());
+			if (bdiCode > 0 && bdiCode != temp) {
+				return null;
+			}
 
 			Candlestick candlestick = new Candlestick(date, code);
-			candlestick.setBdiCode(Integer.valueOf(line.substring(10, 12)
-					.trim()));
+			candlestick.setBdiCode(temp);
 			candlestick.setType(Integer.valueOf(line.substring(24, 27).trim()));
 
 			candlestick
@@ -97,6 +101,10 @@ public class HistoricReader {
 	}
 
 	public List<Candlestick> read(URL url) throws Exception {
+		return read(url, 0);
+	}
+
+	public List<Candlestick> read(URL url, int bdiCode) throws Exception {
 		log.info("Starting reading : " + url);
 		BufferedReader reader = null;
 
@@ -118,7 +126,11 @@ public class HistoricReader {
 		List<Candlestick> candlesticks = new LinkedList<>();
 		while (line != null) {
 			if (line.startsWith("01")) {
-				candlesticks.add(convert(line));
+				Candlestick candlestick = convert(line, bdiCode);
+
+				if (candlestick != null) {
+					candlesticks.add(candlestick);
+				}
 			}
 
 			line = reader.readLine();
