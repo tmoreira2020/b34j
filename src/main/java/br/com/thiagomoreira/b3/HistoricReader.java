@@ -82,15 +82,19 @@ public class HistoricReader {
 		File file = new File(folderName, fileName);
 
 		if (!file.exists()) {
-			file = new File(folderName, fileName.replace('_', '.'));
+			file = new File(folderName, fileName.replace("zip", "TXT"));
 
 			if (!file.exists()) {
-				int endIndex = fileName.lastIndexOf('.');
-				fileName = fileName.substring(0, endIndex);
-				file = new File(folderName, fileName);
+				file = new File(folderName, fileName.replace('_', '.'));
 
 				if (!file.exists()) {
-					file = new File(folderName, fileName.replace('_', '.'));
+					int endIndex = fileName.lastIndexOf('.');
+					fileName = fileName.substring(0, endIndex);
+					file = new File(folderName, fileName);
+
+					if (!file.exists()) {
+						file = new File(folderName, fileName.replace('_', '.'));
+					}
 				}
 			}
 		}
