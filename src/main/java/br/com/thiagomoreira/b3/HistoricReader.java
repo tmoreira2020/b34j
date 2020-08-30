@@ -117,7 +117,7 @@ public class HistoricReader {
 				path.length());
 		File targetFile = new File(tempFolder, fileName);
 
-		FileOutputStream  fos = new FileOutputStream(targetFile);
+		FileOutputStream fos = new FileOutputStream(targetFile);
 
 		IOUtils.copy(url.openStream(), fos);
 
