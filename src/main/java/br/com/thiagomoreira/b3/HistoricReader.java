@@ -17,6 +17,7 @@ package br.com.thiagomoreira.b3;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.math.BigDecimal;
 import java.net.URL;
@@ -27,11 +28,12 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zeroturnaround.zip.ZipUtil;
 
 import br.com.thiagomoreira.b3.domain.Candlestick;
+import net.lingala.zip4j.ZipFile;
 
 public class HistoricReader {
 
@@ -97,7 +99,7 @@ public class HistoricReader {
 	}
 
 	public List<Candlestick> read(File file) throws Exception {
-		return read(file.toURI().toURL());
+		return read(file, 0);
 	}
 
 	public List<Candlestick> read(URL url) throws Exception {
@@ -105,22 +107,35 @@ public class HistoricReader {
 	}
 
 	public List<Candlestick> read(URL url, int bdiCode) throws Exception {
-		log.info("Starting reading : " + url);
+		File tempFolder = new File(System.getProperty("java.io.tmpdir"));
+		String path = url.getPath();
+		String fileName = path.substring(path.lastIndexOf("/") + 1,
+				path.length());
+		File targetFile = new File(tempFolder, fileName);
+
+		FileOutputStream  fos = new FileOutputStream(targetFile);
+
+		IOUtils.copy(url.openStream(), fos);
+
+		fos.close();
+
+		return read(targetFile, bdiCode);
+	}
+
+	public List<Candlestick> read(File file, int bdiCode) throws Exception {
+		log.info("Starting reading : " + file);
 		BufferedReader reader = null;
 
 		File tempFolder = new File(System.getProperty("java.io.tmpdir"));
 
-		String path = url.getPath();
-
-		String fileName = path.substring(path.lastIndexOf("/") + 1,
-				path.length());
+		String fileName = file.getName();
 
 		fileName = fileName.replaceAll("ZIP", "TXT");
-		ZipUtil.unpack(url.openStream(), tempFolder);
+		new ZipFile(file).extractAll(tempFolder.getAbsolutePath());
 
-		File file = getFile(tempFolder, fileName);
+		File txtFile = getFile(tempFolder, fileName);
 
-		reader = new BufferedReader(new FileReader(file));
+		reader = new BufferedReader(new FileReader(txtFile));
 		String line = reader.readLine();
 
 		List<Candlestick> candlesticks = new LinkedList<>();
